@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexis Bolanio - Portfolio</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --text-color: #333;
+            --skill-tag: #333;
+            --sub-text: #666;
+            --border-color: #ddd;
+            --bg-color: #fcfcfc;
+            --primary-accent: #007bff;
+            --modal-bg: rgba(0, 0, 0, 0.85); /* Dark semi-transparent overlay */
+        }
+
+        :root.dark-mode {
+            --text-color: #e0e0e0;
+            --sub-text: #b0b0b0;
+            --border-color: #444;
+            --bg-color: #1a1a1a;
+            --primary-accent: #4da8ff;
+            --skill-tag: #333;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background-color: #e0e0e0;
+            color: var(--text-color);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            font-size: 15px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #0d0d0d;
+        }
+
+        .portfolio-container {
+            background-color: var(--bg-color);
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 95%;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-areas: "header" "main-content";
+            grid-template-rows: auto 1fr;
+            height: auto;
+            margin: 0 auto;
+            min-height: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .header-section {
+            grid-area: header;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-img-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-img-main {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-img-alt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-img-container:hover .profile-img-main {
+            opacity: 0;
+        }
+
+        .profile-img-container:hover .profile-img-alt {
+            opacity: 1;
+        }
+
+        .contact-left { text-align: left; line-height: 1.4; }
+        .contact-left h1 { margin: 0; font-size: 1.8em; color: var(--text-color); }
+        .contact-left p { margin: 0; color: var(--sub-text); font-size: 0.95em; }
+        .contact-left a { color: var(--primary-accent); text-decoration: none; }
+        
+        .contact-right { text-align: right; line-height: 1.4; color: var(--sub-text); font-size: 0.95em; }
+
+        .main-content {
+            grid-area: main-content;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 5px;
+        }
+
+        .profile-summary p { margin: 0; font-size: 1em; line-height: 1.6; text-align: justify; }
+        .profile-summary p strong { color: var(--primary-accent); }
+
+        .section-title {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; text-align: left; }
+        .skill-tag {
+            background-color: #e9ecef;
+            color: var(--skill-tag);
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .projects-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            overflow: visible;
+            max-height: none;
+            padding-right: 10px;
+        }
+
+        .project-item { margin-bottom: 12px; line-height: 1.5; }
+        .project-item strong { color: var(--primary-accent); font-size: 0.95em; }
+        .project-item p { margin: 0; font-size: 0.9em; color: var(--sub-text); }
+        
+        .modal-trigger-btn {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            cursor: pointer;
+            margin-top: 5px; 
+            margin-right: 10px;
+            transition: background-color 0.3s;
+            display: inline-block; 
+        }
+        .modal-trigger-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .project-link-btn {
+            color: var(--primary-accent); 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 0.9em; 
+            margin-top: 5px;
+            display: inline-block;
+        }
+        .project-link-btn:hover {
+            text-decoration: underline;
+        }
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: var(--modal-bg);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-gallery img {
+            width: 45%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-container {
+                padding: 20px;
+                height: auto;
+                min-height: 90%;
+            }
+            .header-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 10px;
+                justify-items: center; /* Center all items in the grid */
+            }
+            .profile-img-container { margin: 0 auto; } /* Ensure container is centered */
+            .contact-left, .contact-right { text-align: center; }
+            .main-content { gap: 15px; }
+            .profile-summary p { text-align: justify; }
+            .skills-grid { justify-content: center; }
+            .projects-list { padding-right: 0; }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 95%;
+            }
+            .modal-gallery img {
+                width: 100%; 
+                max-width: none;
+            }
+            .modal-trigger-btn, .project-link-btn {
+                margin-left: 0;
+                margin-right: 0;
+                display: block;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="portfolio-container">
+        
+        <div class="header-section">
+            <div class="profile-img-container">
+                <img src="2x2-alexis.png" alt="Alexis Bolanio Profile Picture" class="profile-img-main">
+                <img src="shades.jpg" alt="Alexis Bolanio Alternative Picture" class="profile-img-alt">
+            </div>
+            
+            <div class="contact-left">
+                <h1>Alexis Bolanio</h1>
+                <p><a href="mailto:alexisbolanio07@gmail.com">alexisbolanio07@gmail.com</a></p>
+                <p><a href="https://www.linkedin.com/in/alexis-bolanio-9538a2200/" target="_blank">LinkedIn Profile</a></p>
+            </div>
+            
+            <div class="contact-right">
+                <p>Bunlo, Bocaue, Bulacan</p>
+                <p>09651179439</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="profile-summary">
+                <p>Web Application Trainee (Development & QA). Passionate about crafting beautiful, fully-functional web products. Ready to immerse myself in practical OJT experience, focusing on mastering robust infrastructure design and executing meticulous Quality Assurance (QA) testing to deliver clean, scalable, and bug-free code.</p>
+            </div>
+            
+            <div class="skills-section">
+                <h3 class="section-title">Key Skills</h3>
+                <div class="skills-grid">
+                    <span class="skill-tag">Full Stack Development</span>
+                    <span class="skill-tag">Back End Development</span>
+                    <span class="skill-tag">Augmented Reality (AR)</span>
+                    <span class="skill-tag">API Integration</span>
+                    <span class="skill-tag">Quality Assurance (QA)</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">PHP</span>
+                    <span class="skill-tag">Database SQL</span>
+                    <span class="skill-tag">Application Development</span>
+                </div>
+            </div>
+            
+            <div class="projects-section">
+                <h3 class="section-title">Notable Projects</h3>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <strong>Tile Ordering & AR Fitting (Capstone):</strong>
+                        <p>
+                            Full-stack system with **Tile Estimation** and **Augmented Reality (AR) fitting** preview.
+                            <br>
+                            <button class="modal-trigger-btn" onclick="openModal('capstoneModal')">View Project Images (5)</button>
+                            <a href="https://tilefits.com/" target="_blank" class="project-link-btn">
+                                View Live Demo &rarr;
+                            </a>
+                        </p>
+                    </li>
+                    <li class="project-item">
+                        <strong>3D Bike Ordering System:</strong>
+                        <p>E-commerce platform using a **3D preview/configurator** for customization.
+                            <br>
+                            <button class="modal-trigger-btn" onclick="openModal('bikeModal')">View Project Images (3)</button>
+                        </p>
+                    </li>
+                    <li class="project-item">
+                        <strong>Augmented Reality Shooting Game:</strong>
+                        <p>Developed a complete **AR-based mobile shooting game**.
+                            <br>
+                            <button class="modal-trigger-btn" onclick="openModal('arGameModal')">View Project Images (4)</button>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <div id="capstoneModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('capstoneModal')">&times;</span>
+            <h2>Tile Ordering & AR Fitting (Capstone)</h2>
+            <p style="color: var(--sub-text);">Screenshots showing the Tile Estimation, AR Preview, and Billing Interface.</p>
+            
+            <div class="modal-gallery">
+                <img src="tile-1.png" alt="Capstone Screenshot 1: Tile Estimation">
+                <img src="tile-2.png" alt="Capstone Screenshot 2: AR Fitting">
+                <img src="tile-3.png" alt="Capstone Screenshot 3: Billing Interface">
+                <img src="tile-4.png" alt="Capstone Screenshot 4: User Dashboard">
+                <img src="tile-5.png" alt="Capstone Screenshot 5: Final Preview">
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="bikeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('bikeModal')">&times;</span>
+            <h2>3D Bike Ordering System</h2>
+            <p style="color: var(--sub-text);">Images showcasing the 3D customization and ordering process.</p>
+            
+            <div class="modal-gallery">
+                <img src="bike1.jpg" alt="Bike Project Screenshot 1: 3D Customizer">
+                <img src="bike2.jpg" alt="Bike Project Screenshot 2: Order Page">
+                <img src="bike3.jpg" alt="Bike Project Screenshot 3: Admin View">
+                </div>
+        </div>
+    </div>
+
+    <div id="arGameModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('arGameModal')">&times;</span>
+            <h2>Augmented Reality Shooting Game</h2>
+            <p style="color: var(--sub-text);">Screenshots and gameplay mockups from the AR shooting game.</p>
+            
+            <div class="modal-gallery">
+                <img src="game1.png" alt="AR Game Screenshot 1: Gameplay">
+                <img src="game2.jpg" alt="AR Game Screenshot 2: UI">
+                <img src="game3.jpg" alt="AR Game Screenshot 3: Target Recognition">
+                </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Dark mode toggle on profile image hover
+        const profileContainer = document.querySelector('.profile-img-container');
+        const root = document.documentElement;
+        const body = document.body;
+
+        if (profileContainer) {
+            profileContainer.addEventListener('mouseenter', () => {
+                root.classList.add('dark-mode');
+                body.classList.add('dark-mode');
+            });
+
+            profileContainer.addEventListener('mouseleave', () => {
+                root.classList.remove('dark-mode');
+                body.classList.remove('dark-mode');
+            });
+        }
+
+        // Function to open the modal
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+        }
+
+        // Function to close the modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // Close the modal if the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
